@@ -15,28 +15,47 @@ navLinks.addEventListener("click", (e) => {
   menuBtnIcon.setAttribute("class", "ri-menu-line");
 });
 
+document.getElementById('pollForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const selected = document.querySelector('input[name="style"]:checked').value;
+  const results = JSON.parse(localStorage.getItem('pollResults') || '{}');
+  results[selected] = (results[selected] || 0) + 1;
+  localStorage.setItem('pollResults', JSON.stringify(results));
+  showPollResults();
+});
+function showPollResults() {
+  const results = JSON.parse(localStorage.getItem('pollResults') || '{}');
+  const output = Object.entries(results).map(([option, count]) => `${option}: ${count}`).join('<br>');
+  document.getElementById('pollResults').innerHTML = output;
+}
+
+// --- Комментарии ---
+document.getElementById('commentForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const text = document.getElementById('commentText').value.trim();
+  if (!text) return;
+  const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+  comments.push(text);
+  localStorage.setItem('comments', JSON.stringify(comments));
+  document.getElementById('commentText').value = '';
+  loadComments();
+});
+
+function loadComments() {
+  const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+  const list = document.getElementById('commentList');
+  list.innerHTML = '';
+  comments.forEach(comment => {
+    const li = document.createElement('li');
+    li.textContent = comment;
+    list.appendChild(li);
+  });
+
 const scrollRevealOption = {
   origin: "bottom",
   distance: "50px",
   duration: 1000,
 };
-
-ScrollReveal().reveal(".header__image img", {
-  ...scrollRevealOption,
-  origin: "right",
-});
-ScrollReveal().reveal(".header__content h1", {
-  ...scrollRevealOption,
-  delay: 500,
-});
-ScrollReveal().reveal(".header__content p", {
-  ...scrollRevealOption,
-  delay: 1000,
-});
-ScrollReveal().reveal(".header__btns", {
-  ...scrollRevealOption,
-  delay: 1500,
-});
 
 const banner = document.querySelector(".banner__container");
 
@@ -48,33 +67,3 @@ bannerContent.forEach((item) => {
   banner.appendChild(duplicateNode);
 });
 
-ScrollReveal().reveal(".arrival__card", {
-  ...scrollRevealOption,
-  interval: 500,
-});
-
-ScrollReveal().reveal(".sale__image img", {
-  ...scrollRevealOption,
-  origin: "left",
-});
-ScrollReveal().reveal(".sale__content h2", {
-  ...scrollRevealOption,
-  delay: 500,
-});
-ScrollReveal().reveal(".sale__content p", {
-  ...scrollRevealOption,
-  delay: 1000,
-});
-ScrollReveal().reveal(".sale__content h4", {
-  ...scrollRevealOption,
-  delay: 1000,
-});
-ScrollReveal().reveal(".sale__btn", {
-  ...scrollRevealOption,
-  delay: 1500,
-});
-
-ScrollReveal().reveal(".favourite__card", {
-  ...scrollRevealOption,
-  interval: 500,
-});
